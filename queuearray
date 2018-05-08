@@ -1,0 +1,225 @@
+
+#include "QueueArray.h"
+
+template <typename DataType>
+QueueArray<DataType>::QueueArray(int maxNumber)
+{
+    maxSize = maxNumber;
+    front = -1;
+    back = -1;
+    dataItems = NULL;
+    
+    dataItems = new DataType[maxSize];
+    
+}
+
+template <typename DataType>
+QueueArray<DataType>::QueueArray(const QueueArray& other)
+{
+    maxSize = NULL;
+    front = -1;
+    back = -1;
+    dataItems = NULL;
+    
+    *this = other;
+}
+
+template <typename DataType>
+QueueArray<DataType>& QueueArray<DataType>::operator=(const QueueArray& other)
+{
+    int count = -1;
+
+    if( this == &other )
+    {
+        return *this;
+    }
+    else
+    {
+
+        if( maxSize != other.maxSize )
+        {
+            maxSize = other.maxSize;
+            if( dataItems != NULL )
+            {
+                //Return all items stored in the memory
+                delete [] dataItems;
+            }
+
+            dataItems = new DataType [maxSize];
+        }
+        
+        front = other.front;
+        back = other.back;
+        count = front;
+        
+        if((front == back) && (front > -1))
+        {
+            dataItems[count] = other.dataItems[count];
+        }
+        
+        else if( front > -1 )
+        {
+            do {
+                if(count == maxSize)
+                {
+                    count = 0;
+                }
+                
+                dataItems[count] = other.dataItems[count];
+                ++ count;
+                
+            }
+            
+            while(count != (back + 1));
+        }
+    }
+    return *this;
+}
+
+template <typename DataType>
+QueueArray<DataType>::~QueueArray()
+{
+    delete [] dataItems;
+    dataItems = NULL;
+}
+
+
+template <typename DataType>
+void QueueArray<DataType>::enqueue(const DataType& newDataItem) throw (logic_error)
+{
+    if( isFull() )
+    {
+        
+        cout << "The object could not be added."  << endl;
+        }
+        else
+        {
+            if( isEmpty() )
+            {
+                front = 0;
+                back = 0;
+            }
+            else
+            {
+                ++ back;
+                if( back == maxSize )
+                {
+                    back = 0;
+                }
+            }
+            dataItems[back] = newDataItem;
+        }
+}
+
+template <typename DataType>
+DataType QueueArray<DataType>::dequeue() throw (logic_error)
+{
+//    DataType temp;
+//    return temp;
+    
+    int x = front;
+
+    if( isEmpty() )
+    {
+        cout << "An error occurred." << endl;
+    }
+    else
+    {
+        ++ front;
+        if( front == maxSize )
+        {
+            front = 0;
+        }
+        if( (front == (back + 1)) || ((front == 0) && (back == (maxSize - 1))) )
+        {
+            front = -1;
+            back = -1;
+        }
+        return dataItems[x];
+    }
+}
+
+template <typename DataType>
+void QueueArray<DataType>::clear()
+{
+    front = -1;
+    back = -1;
+    
+}
+
+template <typename DataType>
+bool QueueArray<DataType>::isEmpty() const
+{
+	return (front == -1);
+}
+
+template <typename DataType>
+bool QueueArray<DataType>::isFull() const
+{
+    if( (front == 0) && (back == (maxSize - 1)) )
+    {
+        return true;
+    }
+    else if( back == (front - 1) )
+    {
+        return true;
+    }
+    //Determine and show when it is full
+    else
+    {
+        return false;
+    }
+}
+
+//template <typename DataType>
+//void QueueArray<DataType>::putFront(const DataType& newDataItem) throw (logic_error)
+//{
+//}
+//
+//template <typename DataType>
+//DataType QueueArray<DataType>::getRear() throw (logic_error)
+//{
+//    DataType temp;
+//    return temp;
+//}
+//
+//template <typename DataType>
+//int QueueArray<DataType>::getLength() const
+//{
+//    return -1;
+//}
+
+//--------------------------------------------------------------------
+
+template <typename DataType>
+void QueueArray<DataType>::showStructure() const 
+// Array implementation. Outputs the data items in a queue. If the
+// queue is empty, outputs "Empty queue". This operation is intended
+// for testing and debugging purposes only.
+
+{
+    int j;   // Loop counter
+
+    if ( front == -1 )
+       cout << "Empty queue" << endl;
+    else
+    {
+       cout << "Front = " << front << "  Back = " << back << endl;
+       for ( j = 0 ; j < maxSize ; j++ )
+           cout << j << "\t";
+       cout << endl;
+       if ( back >= front )
+          for ( j = 0 ; j < maxSize ; j++ )
+              if ( ( j >= front ) && ( j <= back ) )
+                 cout << dataItems[j] << "\t";
+              else
+                 cout << " \t";
+       else
+          for ( j = 0 ; j < maxSize ; j++ )
+              if ( ( j >= front ) || ( j <= back ) )
+                 cout << dataItems[j] << "\t";
+              else
+                 cout << " \t";
+       cout << endl;
+    }
+}
