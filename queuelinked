@@ -1,0 +1,134 @@
+
+#include "QueueLinked.h"
+
+template <typename DataType>
+QueueLinked<DataType>::QueueNode::QueueNode(const DataType& nodeData, QueueNode* nextPtr)
+{
+    dataItem = nodeData;
+    next = nextPtr;
+}
+
+template <typename DataType>
+QueueLinked<DataType>::QueueLinked(int maxNumber)
+{
+     front = back = NULL;
+}
+
+template <typename DataType>
+QueueLinked<DataType>::QueueLinked(const QueueLinked& other)
+{
+    front = back = NULL;
+    this = other;
+}
+
+template <typename DataType>
+QueueLinked<DataType>& QueueLinked<DataType>::operator=(const QueueLinked& other)
+{
+    clear();
+    QueueNode* x = other.front;
+    
+    while(x != NULL)
+    {
+        insert(x->dataItem);
+        x = x->next;
+    }
+    return *this;
+}
+
+template <typename DataType>
+QueueLinked<DataType>::~QueueLinked()
+{
+    clear();
+}
+
+template <typename DataType>
+void QueueLinked<DataType>::enqueue(const DataType& newDataItem) throw (logic_error)
+{
+    if(!isFull())
+    if(!isEmpty())
+        back = back->next = new QueueNode(newDataItem, NULL);
+        else
+            front = back = new QueueNode(newDataItem, NULL);
+            else
+                throw logic_error("enqueue() while queue is full");
+}
+
+template <typename DataType>
+DataType QueueLinked<DataType>::dequeue() throw (logic_error)
+{
+    if(!isEmpty())
+    {
+        QueueNode* x = front->next;
+        DataType y = front->dataItem;
+        delete front;
+        front = x;
+        return y;
+    }
+    else
+        throw logic_error("dequeue() while queue is empty");
+        return (DataType)NULL;
+}
+
+template <typename DataType>
+void QueueLinked<DataType>::clear()
+{   while (front != NULL)
+    dequeue();
+    front = back = NULL;
+}
+
+template <typename DataType>
+bool QueueLinked<DataType>::isEmpty() const
+{
+    if (front == NULL)
+        return true;
+    else
+        return false;
+}
+
+template <typename DataType>
+bool QueueLinked<DataType>::isFull() const
+{
+	return false;
+}
+
+//template <typename DataType>
+//void QueueLinked<DataType>::putFront(const DataType& newDataItem) throw (logic_error)
+//{
+//}
+//
+//template <typename DataType>
+//DataType QueueLinked<DataType>::getRear() throw (logic_error)
+//{
+//    DataType temp;
+//    return temp;
+//}
+//
+//template <typename DataType>
+//int QueueLinked<DataType>::getLength() const
+//{
+//}
+
+template <typename DataType>
+void QueueLinked<DataType>::showStructure() const
+{
+    QueueNode *p;   // Iterates through the queue
+
+    if ( isEmpty() )
+	cout << "Empty queue" << endl;
+    else
+    {
+	cout << "Front\t";
+	for ( p = front ; p != 0 ; p = p->next )
+	{
+	    if( p == front ) 
+	    {
+		cout << '[' << p->dataItem << "] ";
+	    }
+	    else
+	    {
+		cout << p->dataItem << " ";
+	    }
+	}
+	cout << "\trear" << endl;
+    }
+}
